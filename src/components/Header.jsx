@@ -16,7 +16,7 @@ function Header({Dashboard}) {
             <Navbar.Collapse id="basic-navbar-nav ">
                 <Nav className="ms-auto">
                     { Dashboard &&
-                        <button className='btn btn-danger border'>Logout <i class="fa-solid fa-right-from-bracket"></i></button>
+                        <button className='btn btn-danger'>Logout <i class="fa-solid fa-right-from-bracket"></i></button>
                     }
                 </Nav>
             </Navbar.Collapse>

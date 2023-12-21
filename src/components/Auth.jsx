@@ -1,9 +1,77 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Col, Form, Row } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { loginAPI, registerAPI } from '../services/allAPI';
+import {  ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Auth({register}) {
+    //to hold the value from input box
+    const [userData,setUserData] = useState({
+        username:"",
+        email:"",
+        password:""
+    })
+    console.log(userData);
     const registerForm = register?true:false 
+
+    const navigate = useNavigate()
+
+    //register
+    const handleRegister = async(e)=>{
+        e.preventDefault()
+        const {username,email,password} = userData
+        if(!username || !email || !password){
+            toast.info('Please fill the form completely')
+        }
+        else{
+            const result = await registerAPI(userData)
+            console.log(result);
+            if(result.status === 200){
+                toast.success(`${result.data.username} is successfully registered`)
+                setUserData({
+                    username:"",
+                    email:"",
+                    password:""
+                })
+                //move to login
+
+                navigate('/login')
+            }
+            else{
+                toast.error(result.response.data)
+            }
+        }
+    }
+    const handleLogin = async(e)=>{
+        e.preventDefault()
+        const {email,password} = userData
+        if(!email || !password){
+            toast.info('Please fill the form completely')
+        }
+        else{
+            const result = await loginAPI(userData)
+            console.log(result);
+            if(result.status === 200){
+                toast.success('Login successfull')
+
+                sessionStorage.setItem("existingUser",JSON.stringify(result.data.existingUser))
+                sessionStorage.setItem("token",result.data.token)
+                setUserData({
+                    email:"",
+                    password:""
+                })
+                //navigate to home after login
+                setTimeout(()=>{
+                    navigate('/')
+                },2000)
+               
+            }
+            else{
+                toast.error(result.response.data)
+            }
+        }
+    }
   return (
     <>
         <div style={{height:'100vh'}} className='d-flex justify-content-center align-items-center'>
@@ -28,29 +96,30 @@ function Auth({register}) {
                                         {
                                             registerForm &&
                                             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                                                <Form.Control type="email" placeholder="Username" />
+                                                <Form.Control type="email" placeholder="Username" value={userData.username} onChange={(e)=>setUserData({...userData,username:e.target.value})}/>
                                             </Form.Group>
                                         }
                                         <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                                            <Form.Control type="email" placeholder="Email-address" />
+                                            <Form.Control type="email" placeholder="Email-address" value={userData.email} onChange={(e)=>setUserData({...userData,email:e.target.value})} />
                                         </Form.Group>
                                         <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                                            <Form.Control type="password" placeholder="Password" />
+                                            <Form.Control type="password" placeholder="Password" value={userData.password} onChange={(e)=>setUserData({...userData,password:e.target.value})} />
                                         </Form.Group>
                                         
-                                    </Form>
+
                                     {
                                         registerForm?
                                         <div >
-                                        <button className='btn btn-warning'>Register</button>
+                                        <button onClick={handleRegister} className='btn btn-warning'>Register</button>
                                         <p style={{color:'white'}} className='mt-2'>Already a User? Click here to <Link to={'/login'} style={{color:'black',textDecoration:'none'}}>Login</Link></p>
                                         </div>:
                                         <div >
-                                        <button className='btn btn-warning'>Login</button>
+                                        <button onClick={handleLogin} className='btn btn-warning'>Login</button>
                                         <p style={{color:'white'}} className='mt-2'>New User? Click here to <Link to={'/register'} style={{color:'black',textDecoration:'none'}}>Register</Link></p>
                                     </div>
                                     }
-                                    
+                            </Form>
+                                     <ToastContainer position='top-left' theme="colored" closeOnClick draggable/>
                                 </div>
                             </div>
                         </Col>
@@ -58,6 +127,7 @@ function Auth({register}) {
                 </div>
             </div>
         </div>
+       
     </>
   )
 }
