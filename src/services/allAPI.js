@@ -24,11 +24,29 @@ export const homeProjectAPI = async()=>{
 }
 
 //all project
-export const allProjectAPI = async(reqHeader)=>{
-    return await commonApi("GET",`${BASE_URL}/project/all-project`,"",reqHeader)
+export const allProjectAPI = async(searchKey,reqHeader)=>{
+    return await commonApi("GET",`${BASE_URL}/project/all-project?search=${searchKey}`,"",reqHeader)
 }
 
 //all user project
-export const allUserProject = async(reqHeader)=>{
+export const allUserProjectAPI = async(reqHeader)=>{
     return await commonApi("GET",`${BASE_URL}/user/all-project`,"",reqHeader)
+}
+
+//edit user project
+export const editUserProjectAPI = async(projectId,reqBody,reqHeader)=>{
+    //path parameter - :id - router
+    return await commonApi("PUT",`${BASE_URL}/project/update/${projectId}`,reqBody,reqHeader)
+}
+
+//deleteuserproject
+export const deleteUserProjectAPI = async(projectId,reqHeader)=>{
+    //path parameter - :id - router
+    return await commonApi("DELETE",`${BASE_URL}/project/delete/${projectId}`,{},reqHeader)
+}
+
+//edit user profile
+export const editUserProfileAPI = async(userId,reqBody,reqHeader)=>{
+    //path parameter - :id - router
+    return await commonApi("PUT",`${BASE_URL}/user/edit/${userId}`,reqBody,reqHeader)
 }

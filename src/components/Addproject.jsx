@@ -1,11 +1,17 @@
-import React, { useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { useState } from 'react';
 import { Col, Form, Row } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { addProjectAPI } from '../services/allAPI';
+import { addProjectResponseContext } from '../contexts/ContextShare';
+import {  ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Addproject() {
+  //useContent hook is used to access the context api
+  const {addProjectResponse , setAddProjectResponse} = useContext(addProjectResponseContext)
+
   const [show, setShow] = useState(false);
 
   //to hold url of the image
@@ -63,10 +69,10 @@ function Addproject() {
   const handleAdd = async(e)=>{
     e.preventDefault()
 
-    const{title,projectImage,language,github,website,overView} = projectDetials
+    const {title , projectImage , language , github , website , overView} = projectDetials
 
     if(!title || !projectImage || !language || !github || !website || !overView){
-      alert('Please fill the form completely')
+      toast.warning('Please fill the form completely')
     }
     else{
       //reqBody
@@ -80,30 +86,36 @@ function Addproject() {
       reqBody.append("github",github)
       reqBody.append("website",website)
       reqBody.append("overView",overView)
-    if(token){
-      const reqHeader = {
-        "Content-Type":"multipart/form-data",
-        "Authorization":`Bearer ${token}`
-      }
-      
-      const result = await addProjectAPI(reqBody,reqHeader)
-      //console.log(result);
-      if(result.status===200){
-        alert('Project Successfully Added')
-        handleClose()
-      }
-      else{
-        console.log(result);
-        alert(result.response.data)
+
+      //const token = sessionStorage.getItem("token")
+
+      if(token){
+        const reqHeader = {
+          "Content-Type":"multipart/form-data",
+          "Authorization":`Bearer ${token}`
+        }
+        
+        const result = await addProjectAPI(reqBody,reqHeader)
+        //console.log(result);
+        if(result.status===200){
+          toast.success('Project Successfully Added')
+          handleClose()
+          setAddProjectResponse(result.data)
+        }
+        else{
+          console.log(result);
+          toast.error(result.response.data)
+        }
       }
     }
-  }
   }
 
   return (
     <>
         <Button onClick={handleShow} className='btn btn-success'>Add project</Button>
+        
         <Modal show={show} onHide={handleClose} size="lg" backdrop="static" keyboard={false}>
+        <ToastContainer position='top-left' theme="colored" closeOnClick draggable/>
         <Modal.Header closeButton>
           <h3>PROJECT DETIALS</h3>
         </Modal.Header>
@@ -147,6 +159,7 @@ function Addproject() {
           </div>
         </Modal.Footer>
       </Modal>
+      
     </>
   )
 }

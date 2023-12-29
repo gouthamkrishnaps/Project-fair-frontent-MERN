@@ -7,7 +7,7 @@ import { Col, Row } from 'react-bootstrap';
 import { BASE_URL } from '../services/baseUrl';
 
 function ProCards({data}) {
-    console.log(data.projectImage);
+    //console.log(data.projectImage);
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -35,11 +35,11 @@ function ProCards({data}) {
             </Col>
           </Row>
           <div className='d-flex mt-2 mb-2 gap-2'>
-            <a className='p-1 rounded' style={{boxShadow:'2px 2px 2px 0px grey'}} href={data.github} target='_blank'><i style={{color:'black'}} class="fa-brands fa-github fa-2x"></i></a>
-            <a className='p-1 rounded' style={{boxShadow:'2px 2px 2px 0px grey'}} href={data.website} target='_blank'><i style={{color:'black'}}class="fa-solid fa-link fa-2x"></i></a>
+            <a className='p-1 rounded' style={{boxShadow:'2px 2px 2px 0px grey'}} href={data.github} target='_blank'><i style={{color:'black'}} className="fa-brands fa-github fa-2x"></i></a>
+            <a className='p-1 rounded' style={{boxShadow:'2px 2px 2px 0px grey'}} href={data.website} target='_blank'><i style={{color:'black'}} className="fa-solid fa-link fa-2x"></i></a>
           </div>
         </Modal.Body>
-      </Modal>
+        </Modal>
     </div>
   )
 }

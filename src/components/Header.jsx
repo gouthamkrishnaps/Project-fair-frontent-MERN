@@ -1,12 +1,25 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Nav } from 'react-bootstrap';
 import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { isAuthTokenContext } from '../contexts/ContextShare';
 
 
 function Header({Dashboard}) {
+    const {isAuthToken,setIsAuthToken} = useContext(isAuthTokenContext)
     //const Dashbtn = Dashboard?true:false 
+
+    const naviagte = useNavigate()
+
+    const handleLogout = ()=>{
+        sessionStorage.removeItem("token")
+        sessionStorage.removeItem("existingUser")
+        setIsAuthToken(false)
+        naviagte('/')
+    }
+
+ 
   return (
     <div>
         <Navbar expand="lg" style={{backgroundColor:'#628ECB',color:'white'}}>
@@ -16,7 +29,7 @@ function Header({Dashboard}) {
             <Navbar.Collapse id="basic-navbar-nav ">
                 <Nav className="ms-auto">
                     { Dashboard &&
-                        <button className='btn btn-danger'>Logout <i class="fa-solid fa-right-from-bracket"></i></button>
+                        <button onClick={handleLogout} className='btn btn-danger'>Logout <i class="fa-solid fa-right-from-bracket"></i></button>
                     }
                 </Nav>
             </Navbar.Collapse>

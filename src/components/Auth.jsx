@@ -1,11 +1,13 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { Col, Form, Row } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom'
 import { loginAPI, registerAPI } from '../services/allAPI';
 import {  ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { isAuthTokenContext } from '../contexts/ContextShare';
 
 function Auth({register}) {
+    const {isAuthToken,setIsAuthToken} = useContext(isAuthTokenContext)
     //to hold the value from input box
     const [userData,setUserData] = useState({
         username:"",
@@ -61,6 +63,7 @@ function Auth({register}) {
                     email:"",
                     password:""
                 })
+                setIsAuthToken(true)
                 //navigate to home after login
                 setTimeout(()=>{
                     navigate('/')
